@@ -12,6 +12,10 @@
           {% csrf_token %}
           {{ form|crispy }}
           <button type="submit" class="btn btn-primary btn-block mt-3">Make prediction</button>
+          <button type="submit" 
+          name="save_json" class="btn btn-secondary btn-block mt-3">Save to JSON</button>
+          <button type="submit"
+          name="save_pdf" class="btn btn-secondary btn-block mt-3">Save to PDF</button>
         </form>
       </div>
       <div class="col-md-6">
@@ -22,6 +26,7 @@
           </div>
           <div class="card-body">
             <p class="card-text">{{ prediction }}</p>
+
           </div>
         </div>
         {% endif %}
@@ -30,3 +35,4 @@
   </div>
   </div>
 {% endblock %}
+

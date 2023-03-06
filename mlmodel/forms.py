@@ -104,16 +104,18 @@ class LoginForm(AuthenticationForm):
 # форма для ввода данных для предсказания (без сохранения в бд)
 class AddPredictionForm(forms.Form):
 
-    CITY_GROUPS = [('Big', 'Other'),]
-    TYPES = [('FC', 'FC'),('DT', 'DT'),('IL','IL'),('MB','MB')]
+    CITY_GROUPS = [('Big Cities', 'Big Cities'),('Other', 'Other'),]
+    TYPES = [('FC', 'FC'),('DT', 'DT'),('IL','IL')]
 
     city = forms.CharField(max_length=30)
     city_group = forms.ChoiceField(choices=CITY_GROUPS)
     type = forms.ChoiceField(choices=TYPES)
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     # потом изменить на оптимальные признаки
-    P1 = forms.IntegerField()
-    P2 = forms.IntegerField()
+    P5 = forms.IntegerField()
+    P6 = forms.IntegerField()
+    P22 = forms.IntegerField()
+    P23 = forms.IntegerField()
 
     def __init__(self, *args, **kwargs):
         super(AddPredictionForm, self).__init__(*args, **kwargs)
@@ -132,8 +134,10 @@ class AddPredictionForm(forms.Form):
                 css_class='form-row'
             ),
             Row(
-                Column('P1', css_class='form-group col-md-6 mb-0'),
-                Column('P2', css_class='form-group col-md-6 mb-0'),
+                Column('P5', css_class='form-group col-md-6 mb-0'),
+                Column('P6', css_class='form-group col-md-6 mb-0'),
+                Column('P22', css_class='form-group col-md-6 mb-0'),
+                Column('P23', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
         )

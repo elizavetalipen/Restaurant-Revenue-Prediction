@@ -5,7 +5,13 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.decorators import login_required
 from .forms import UserProfileEditForm, UserEditForm, AddPredictionForm
-from .models import UserProfile
+from .models import UserProfile, Prediction
+from django.http import HttpResponse
+from .utils import *
+from django.template.loader import render_to_string
+import io
+import json
+from PyPDF2 import PdfFileWriter, PdfFileReader
 
 
 def homepage_view(request):
@@ -83,7 +89,6 @@ def profile_settings_view(request):
 
 @login_required
 def predict_view(request):
-    # прототип функции, ML добавлю позже
     user = request.user
     prediction = 'Revenue Value'
     if request.method == 'POST':
@@ -93,13 +98,38 @@ def predict_view(request):
             city_group = form.cleaned_data['city_group']
             type = form.cleaned_data['type']
             date = form.cleaned_data['date']
-            P1 = form.cleaned_data['P1']
-            P2 = form.cleaned_data['P2']
-            prediction = 'Revenue Value'
+            P5 = form.cleaned_data['P5']
+            P6 = form.cleaned_data['P6']
+            P22 = form.cleaned_data['P22']
+            P23 = form.cleaned_data['P23']
+
+            preds_dict = {"City": city, 'City Group': city_group,
+                'Type': type,'Open Date': date.strftime('%Y-%m-%d'),
+                'P5': P5, 'P6': P6, 'P22': P22, 'P23': P23}
+            
+            prediction = make_prediction(preds_dict)
+            preds_dict["Prediction"]=prediction
+
+            new_prediction = Prediction.objects.create(user=request.user,predicted_revenue=prediction)
+            user_profile = UserProfile.objects.get(user=request.user)
+            user_profile.count += 1
+            user_profile.save()
+        
+            if 'save_pdf' in request.POST:
+                pdf_content = dict_to_pdf(preds_dict)
+                response = HttpResponse(pdf_content, content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="prediction.pdf"'
+                return response
+
+            if 'save_json' in request.POST:
+                json_content = json.dumps(preds_dict, indent=4)
+                response = HttpResponse(json_content, content_type='application/json')
+                response['Content-Disposition'] = 'attachment; filename="prediction.json"'
+                return response
+
     else:
         form=AddPredictionForm()
     return render(request, 'predict_revenue.html', {'form': form, 'prediction': prediction})
-
 
 
 
