@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import PasswordChangeForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Div, Field, Row, Column
 from django.contrib.auth.models import User
@@ -27,7 +28,6 @@ class UserProfileEditForm(forms.ModelForm):
         )
 
 
-# форма для настроек аккаунта
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
@@ -101,7 +101,7 @@ class LoginForm(AuthenticationForm):
             )
         )
 
-# форма для ввода данных для предсказания (без сохранения в бд)
+# форма для ввода данных для предсказания
 class AddPredictionForm(forms.Form):
 
     CITY_GROUPS = [('Big Cities', 'Big Cities'),('Other', 'Other'),]
@@ -111,11 +111,10 @@ class AddPredictionForm(forms.Form):
     city_group = forms.ChoiceField(choices=CITY_GROUPS)
     type = forms.ChoiceField(choices=TYPES)
     date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    # потом изменить на оптимальные признаки
-    P5 = forms.IntegerField()
-    P6 = forms.IntegerField()
-    P22 = forms.IntegerField()
-    P23 = forms.IntegerField()
+    P2 = forms.FloatField()
+    P6 = forms.FloatField()
+    P23 = forms.FloatField()
+    P28 = forms.FloatField()
 
     def __init__(self, *args, **kwargs):
         super(AddPredictionForm, self).__init__(*args, **kwargs)
@@ -134,10 +133,10 @@ class AddPredictionForm(forms.Form):
                 css_class='form-row'
             ),
             Row(
-                Column('P5', css_class='form-group col-md-6 mb-0'),
+                Column('P2', css_class='form-group col-md-6 mb-0'),
                 Column('P6', css_class='form-group col-md-6 mb-0'),
-                Column('P22', css_class='form-group col-md-6 mb-0'),
-                Column('P23', css_class='form-group col-md-6 mb-0'),
+                Column('23', css_class='form-group col-md-6 mb-0'),
+                Column('P28', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
         )

@@ -10,4 +10,5 @@ urlpatterns = [
     path('profile/edit/', edit_profile_view, name='edit_profile'),
     path('profile/settings/', profile_settings_view, name='profile_settings'),
     path('predict/',predict_view, name='predict'),
+    path('error_page/', handle_exceptions, name="handle_exceptions"),
 ]

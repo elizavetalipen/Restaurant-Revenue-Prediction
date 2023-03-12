@@ -9,6 +9,7 @@ from sklearn.preprocessing import PowerTransformer
 from tensorflow import keras
 import pandas as pd
 import numpy as np
+from joblib import load
 
 
 def dict_to_pdf(data: dict):
@@ -19,8 +20,8 @@ def dict_to_pdf(data: dict):
     pdf_page = pdf_writer.addBlankPage(*letter)  
 
     canvas = Canvas(pdf_buffer, pagesize=letter, bottomup=0)
-    x_pos = 50
-    y_pos = 300
+    x_pos = 150
+    y_pos = 400
     line_spacing = 40
     canvas.setFont('Helvetica-Bold', 16)
 
@@ -62,7 +63,7 @@ def make_prediction(data:dict):
 
     # преобразование численных данных
     minmaxsc = MinMaxScaler()
-    pcols = ["P5", "P6", "P22", "P23"]
+    pcols = ["P2", "P6", "P23", "P28"]
     data[pcols+["NMonths", "CityEnc"] ] = minmaxsc.fit_transform(data[pcols+["NMonths", "CityEnc"]])
 
     # преобразование категориальны данных
@@ -82,13 +83,19 @@ def make_prediction(data:dict):
     data.drop(["Open Date", "City", "City Group", "Type"], axis=1, inplace=True)
 
     # загрузка модели и выполнение предсказания
-    model = keras.models.load_model('trainedmodels/model1_keras.h5')
+    model = keras.models.load_model('trainedmodels/model_keras.h5')
     prediction = model.predict(data.values)
     pt = PowerTransformer(method='box-cox')
     pt.fit(train["revenue"].values.reshape(-1, 1))
     prediction = pt.inverse_transform(prediction)
 
     return float(prediction[0][0])
+
+
+  
+
+
+  
 
 
 
